@@ -40,11 +40,11 @@ import Scroll from "components/common/scroll/Scroll.vue";
 import NavBar from "components/common/navbar/NavBar.vue";
 import TabControl from "components/content/tabControl/TabControl.vue";
 import GoodsList from "components/content/goods/GoodsList.vue";
-import BackTop from "components/content/backTop/BackTop.vue";
+// import BackTop from "components/content/backTop/BackTop.vue";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import { debounce } from "../../common/utils";
-
+// import { debounce } from "../../common/utils";
+import { itemListenerMixin, backTopMixin } from "../../common/mixins";
 export default {
   components: {
     NavBar,
@@ -54,8 +54,9 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
+    // BackTop,
   },
+  name: "Home",
   data() {
     return {
       banners: [],
@@ -67,12 +68,14 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
+      // isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
+      // ItemImageListener: null,
     };
   },
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     //数据请求是在组件创建好了就要全部请求过来所以使用created函数
     // 把主要的逻辑代码写到methods中
@@ -82,6 +85,7 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+    // console.log(1);
   },
   computed: {
     showGoods() {
@@ -90,13 +94,12 @@ export default {
   },
   mounted() {
     //监听item中图片加载完成
-    const refresh = debounce(this.$refs.scroll.refresh, 500);
-    this.$bus.$on("itemImageLoad", () => {
-      // this.$refs.scroll.refresh();
-      // this.$refs.scroll.refresh();
-      refresh();
-    });
-
+    // const refresh = debounce(this.$refs.scroll.refresh, 500);
+    // this.$bus.$on("itemImageLoad", () => {
+    //   // this.$refs.scroll.refresh();
+    //   // this.$refs.scroll.refresh();
+    //   refresh();
+    // });
     // 2.组件是没有offsetTop
     //需要获取到组件内部元素，元素才有offsetTop值
     //所有组件都一个属性$el：用于获取组件中的的元素
@@ -108,9 +111,13 @@ export default {
   activated() {
     this.$refs.scroll.scrollTo(0, this.saveY, 0);
     this.$refs.scroll.refresh();
+    // console.log(this.saveY);
   },
   deactivated() {
     this.saveY = this.$refs.scroll.getScrollY();
+    // console.log(this.saveY);
+    // 取消全局事件的监听
+    this.$bus.$off("itemImgLoad", this.ItemImageListener);
   },
   methods: {
     /* 事件监听相关方法 */
@@ -130,12 +137,12 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
-    backClick() {
-      // console.log(this.$refs.scroll);
-      //可以直接封装一个方法在scroll组件中
-      // this.$refs.scroll.scroll.scrollTo(0, 0, 300);
-      this.$refs.scroll.scrollTo(0, 0, 300);
-    },
+    // backClick() {
+    //   // console.log(this.$refs.scroll);
+    //   //可以直接封装一个方法在scroll组件中
+    //   // this.$refs.scroll.scroll.scrollTo(0, 0, 300);
+    //   this.$refs.scroll.scrollTo(0, 0, 300);
+    // },
     contentScroll(position) {
       // console.log(position);
       // 1.判断BackTop是否显示
@@ -186,9 +193,6 @@ export default {
 </script>
 
 <style scoped>
-#home {
-  /* padding-top: 44px; */
-}
 .home-nav {
   background-color: var(--color-tint);
   color: #fff;

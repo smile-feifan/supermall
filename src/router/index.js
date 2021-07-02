@@ -6,7 +6,7 @@ const Home=()=>import('../views/home/Home.vue')
 const Category=()=>import('../views/category/Category.vue')
 const Cart = () => import('../views/cart/Cart')
 const Profile = () => import('../views/profile/Profile')
-// const Detail =()=>import('../views/detail/Detail.vue')
+const Detail =()=>import('../views/detail/Detail.vue')
 
 Vue.use(VueRouter)
 
@@ -43,13 +43,15 @@ const routes = [
       title:'我的'
     }
   },
-  // {
-  //   path:'/detail/:iid',
-  //   component:Detail,
-  //   meta:{
-  //     title:'详情页'
-  //   }
-  // }
+  {
+    // path:'/detail',
+    // 动态获取路由
+    path:'/detail/:iid',
+    component:Detail,
+    meta:{
+      title:'详情页'
+    }
+  }
 ]
 
 const router = new VueRouter({
